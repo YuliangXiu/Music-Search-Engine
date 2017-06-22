@@ -13,6 +13,6 @@ urlpatterns = [
    url(r'^singer/$' , views.get_search_singers, name='search_singers'),
    url(r'^album/$' , views.get_search_albums, name='search_albums'),
    url(r'^lyric/$' , views.get_search_lyrics, name='search_lyrics'),
-
+   url(r'^recognize/$' , views.get_recognize_results, name='search_voice'),
 ]
 

@@ -39,23 +39,22 @@
                             </div>
                         </div>
                     </form>
+
                 </div>
             </nav>
-
             <ul class="nav nav-tabs nav-justified">
               <li role="presentation" class="active"><a href="/music">单曲</a></li>
               <li role="presentation"><a href="/music/singer">歌手</a></li>
               <li role="presentation"><a href="/music/album">专辑</a></li>
                 <li role="presentation"><a href="/music/lyric">歌词</a></li>
             </ul>
-            {% if results %}
                 <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
                     <th width="100px">流行度</th>
                     <th width="100px">播放次数</th>
-                  <th>单曲( {{ query }} )</th>
+                  <th>单曲</th>
                   <th>歌手</th>
                   <th>专辑</th>
                   <th>试听</th>
@@ -63,29 +62,24 @@
                 </tr>
               </thead>
               <tbody>
-                    {% for song in results %}
                     {% load static %}
                         <tr>
-                            <th>{{ song.object.music_popularity }}</th>
-                            <th width="100px">{{ song.object.music_played_times }}</th>
-                            <th>{{ song.object.music_title }}</th>
-                            <th>{{ song.object.music_singer }}</th>
-                            <th>{{ song.object.music_album }}</th>
+                            <th>{{ results.music_popularity }}</th>
+                            <th width="100px">{{ results.music_played_times }}</th>
+                            <th>{{ results.music_title }}</th>
+                            <th>{{ results.music_singer }}</th>
+                            <th>{{ results.music_album }}</th>
                             {% load other_funs %}
                             {% static "" as baseUrl %}
                             <th><audio controls="controls" height="100" width="50">
-                      <source src="{{ baseUrl }}{{mp3_urls|hash:song.object.music_local_id}}"  type= "audio/mp3" />
+                      <source src="{{ baseUrl }}{{ mp3_url }}"  type= "audio/mp3" />
                     </audio></th>
-                             <th><a href="/music/song_id/{{ song.object.music_local_id }}/">Details</a></th>
+                             <th><a href="/music/song_id/{{ results.music_local_id }}/">Details</a></th>
 
                         <tr>
-                    {% endfor %}
                 </tbody>
                 <table>
                 </div>
-            {% else %}
-                <p>No songs are available.</p>
-            {% endif %}
     </div>
 </div>
 </body>

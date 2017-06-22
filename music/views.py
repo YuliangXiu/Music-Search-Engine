@@ -9,7 +9,16 @@ from django.urls import reverse
 #def search(request):
 #    return render(request,'music/search.html')
 from haystack.query import SearchQuerySet
+
+import sys
 import os
+from pydub import AudioSegment
+from SFEngine import *
+
+stdout = sys.stdout
+reload(sys)
+sys.setdefaultencoding('utf-8')
+sys.stdout = stdout
 
 from haystack.generic_views import SearchView
 
@@ -26,7 +35,6 @@ def song_id(request, song_num):
     song.music_played_times = song.music_played_times+1
     song.save()
     lyric = song.music_lyric_content
-    print lyric
     new_lyric = ""
     flag = 0
     for c in lyric:
@@ -42,8 +50,6 @@ def song_id(request, song_num):
     img_url = "/Class"+str(song.Class_Num)+"/Cover/"+str(song.music_album_id)+"_"+song.music_album
     mp3_url = "/Class"+str(song.Class_Num)+"/Music/"+str(song.music_local_id)+"_"+str(song.music_cloud_id)+"_"+song.music_singer+"_"+song.music_title+".mp3"
 
-    # print img_url
-    # print mp3_url
     return render(request,'music/song_detail.html',{'song':song ,'new_lyric':new_lyric, 'img_url':img_url, 'mp3_url':mp3_url})
 
 from haystack.inputs import AutoQuery
@@ -77,7 +83,7 @@ def get_search_results(request):
 
     i = 0
     norm = max_played_time - min_played_time
-    rank_weight_2 = 10
+    rank_weight_2 = 100
     if norm == 0:
         norm  = max_played_time+1
     for re in results:
@@ -139,7 +145,7 @@ def get_search_singers(request):
 
     i = 0
     norm = max_played_time - min_played_time
-    rank_weight_2 = 10
+    rank_weight_2 = 100
     if norm == 0:
         norm  = max_played_time+1
     for re in results:
@@ -201,7 +207,7 @@ def get_search_albums(request):
 
     i = 0
     norm = max_played_time - min_played_time
-    rank_weight_2 = 10
+    rank_weight_2 = 100
     if norm == 0:
         norm  = max_played_time+1
     for re in results:
@@ -264,7 +270,7 @@ def get_search_lyrics(request):
 
     i = 0
     norm = max_played_time - min_played_time
-    rank_weight_2 = 10
+    rank_weight_2 = 100
     if norm == 0:
         norm  = max_played_time+1
     for re in results:
@@ -296,4 +302,32 @@ def get_search_lyrics(request):
 
     return render(request, "music/search_lyric.html", {"query":len(results) , "results": final_results, 'mp3_urls':mp3_urls,'img_urls':img_urls})
 
+
+def get_recognize_results(request):
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
+    path = '/Volumes/MWL/static/small/'
+
+    class TextArea(object):
+        def __init__(self):
+            self.buffer = []
+
+        def write(self, *args, **kwargs):
+            self.buffer.append(args)
+    stdout = sys.stdout
+    sys.stdout = TextArea()
+
+    engine = SFEngine()
+    engine.index(path)
+    engine.search('/Volumes/MWL/static/nian.wav')
+    text_area, sys.stdout = sys.stdout, stdout
+    query = text_area.buffer[0][0][26:].split('_')[0]
+
+    result = Music_Info_Detail.objects.get(music_local_id=query)
+    img_url = "Class"+str(result.Class_Num)+"/Cover/"+str(result.music_album_id)+"_"+result.music_album
+    mp3_url = "Class"+str(result.Class_Num)+"/Music/"+str(result.music_local_id)+"_"+str(result.music_cloud_id)+"_"+result.music_singer+"_"+result.music_title+".mp3"
+
+    return render(request, "music/search_recog.html", {"results": result, 'mp3_url':mp3_url,'img_url':img_url})
 
