@@ -1,0 +1,91 @@
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <style type="text/css">
+        /* nav bar search box - drop down menu button */
+        .navbar .navbar-search .dropdown-menu {
+            min-width: 25px;
+        }
+
+        .dropdown-menu .label-icon {
+            margin-left: 5px;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: inherit;
+            transition: all .5s;
+        }
+    </style>
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+            <nav class="navbar navbar-default">
+                <div class="nav nav-justified navbar-nav">
+                    <form class="navbar-form navbar-search" role="search" method="get" action=".">
+                        <div class="input-group">
+                            <input type="text" class="form-control" style="width: 950px" name="search_text">
+                            <div class="input-group-btn">
+                                <button type="submit" class="btn btn-search btn-info">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    <span class="label-icon">search</span>
+                                </button>
+                                <button type="submit" class="btn btn-search btn-info">
+                                    <span class="glyphicon glyphicon-music"></span>
+                                    <span class="label-icon">voice</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </nav>
+            <ul class="nav nav-tabs nav-justified">
+              <li role="presentation"><a href="/music/">单曲</a></li>
+              <li role="presentation"><a href="/music/singer">歌手</a></li>
+              <li role="presentation" class="active"><a href="/music/album">专辑</a></li>
+                <li role="presentation"><a href="/music/lyric">歌词</a></li>
+            </ul>
+            {% if results %}
+                <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                    <th width="100px">流行度</th>
+                    <th width="100px">播放次数</th>
+                  <th>单曲</th>
+                  <th>歌手</th>
+                  <th>专辑</th>
+                  <th>试听</th>
+                    <th>更多</th>
+                </tr>
+              </thead>
+              <tbody>
+                    {% for song in results %}
+                    {% load static %}
+                        <tr>
+                            <th>{{ song.object.music_popularity }}</th>
+                            <th width="100px">{{ song.object.music_played_times }}</th>
+                            <th>{{ song.object.music_title }}</th>
+                            <th>{{ song.object.music_singer }}</th>
+                            <th>{{ song.object.music_album }}</th>
+                            {% load other_funs %}
+                            {% static "" as baseUrl %}
+                            <th><audio controls="controls" height="100" width="50">
+                      <source src="{{ baseUrl }}{{mp3_urls|hash:song.object.music_local_id}}"  type= "audio/mp3" />
+                    </audio></th>
+                             <th><a href="/music/song_id/{{ song.object.music_local_id }}/">Details</a></th>
+
+                        <tr>
+                    {% endfor %}
+                </tbody>
+                <table>
+                </div>
+            {% else %}
+                <p>No songs are available.</p>
+            {% endif %}
+    </div>
+</div>
+</body>

@@ -1,0 +1,37 @@
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0 auto;
+            width: 500px;
+            margin-top: 50px;
+            text-align: center
+        }
+    </style>
+    <meta charset="UTF-8">
+</head>
+<body>
+{% load static %}
+<div align="center" class="row">
+        <div class="thumbnail">
+            <img  width="200px" src={% static img_url %}  onerror=' src="{% static "Class1/Cover/35554042_DropTopWop" %}"'>
+            <h2></h2>
+            <audio controls="controls" height="100" width="100">
+                <source src={% static mp3_url %}  type=
+                "audio/mp3" />
+            </audio>
+            <div class="caption">
+                <h1>{{ song.music_title }}</h1>
+                <h3>{{ song.music_singer }}</h3>
+                <h3>{{ song.music_album }}</h3>
+                <p>{{ new_lyric|linebreaksbr }}</p>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
